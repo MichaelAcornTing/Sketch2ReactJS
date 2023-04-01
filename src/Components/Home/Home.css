@@ -1,0 +1,18 @@
+.header {
+    margin: 70px;
+    margin-left: 40%;
+    opacity: 90%;
+}
+
+.body {
+    margin-left: 30%;
+}
+
+a {
+    text-decoration: none;
+    color: #8fc531;
+}
+
+a:hover {
+    text-decoration: underline;
+}

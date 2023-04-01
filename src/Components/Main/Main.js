@@ -70,8 +70,8 @@ function Main() {
   const handleConversion = async () => {
     setIsDetecting(true);
     const response = await axios.post(BACKEND_URL + 'convert', {'encodedImage': sketchImageData});
-    const detects = response.data['detects'];
-    setDetections(detects);
+    const detectedElements = response.data['detectedElements'];
+    setDetections(detectedElements);
     setIsDetecting(false);
   }
 
@@ -91,11 +91,12 @@ function Main() {
 
   let currentCol = -1
   let currentColEnd = -1
+  const colOffset = 100
   const alignXPosition = (elemDetails) => {
     let xMinPosition = elemDetails['shape']['xPos'];
     if(xMinPosition > currentColEnd) {
       currentCol = xMinPosition;
-      currentColEnd = xMinPosition + 100;
+      currentColEnd = xMinPosition + colOffset;
     } else {
       xMinPosition = currentCol
     }
@@ -137,8 +138,8 @@ function Main() {
   }
 
   const getDistanceFromTwoElements = (currentElementID, otherElementID) => {
-    let currentElementShape = getShapeFromBoundingBox(detections[0][currentElementID]['bounding_box']);
-    let otherElementShape = getShapeFromBoundingBox(detections[0][otherElementID]['bounding_box']); 
+    let currentElementShape = getShapeFromBoundingBox(detections['xSorted'][currentElementID]['bounding_box']);
+    let otherElementShape = getShapeFromBoundingBox(detections['xSorted'][otherElementID]['bounding_box']); 
     let currentElementMidpoint = currentElementShape['midpoint'];
     let otherElementMidpoint = otherElementShape['midpoint'];
     let distance = getDistanceFromTwoPoints(currentElementMidpoint, otherElementMidpoint);
@@ -148,8 +149,8 @@ function Main() {
   const getClosestElementID = (id) => {
     let resultID = 'none';
     let smallestDistance = 1000000;
-    for(let i = 0; i < detections[0].length; i++) {
-      if(detections[0][i]['label'] != 'Label') {
+    for(let i = 0; i < detections['xSorted'].length; i++) {
+      if(detections['xSorted'][i]['label'] != 'Label') {
         let otherElementID = i;
         let distance = getDistanceFromTwoElements(id, otherElementID);
         if(distance < smallestDistance) { 
@@ -240,20 +241,10 @@ function Main() {
     setShowCode(!showCode);
     setShowCode(htmlStr);
   }
-  
-  const handleOCR = async () => {
-    // for(let i = 0; i < detections.length; i++) {
-    //   if(detections[i]['label'] == 'Label') {
-    //   let text = await axios.post(BACKEND_URL + '/applyOCR', {'data': detections[i]['bounding_box']})['data'];
-    //   updateLabelElement(detections[i]['id'], text);
-    //   }
-    // }
-  }
 
   const generateDetailsOfElement = (element) => {
     const bounding_box = element['bounding_box'];
     const shape = getShapeFromBoundingBox(bounding_box);
-    // shape['xPos'] = alignXPosition(shape['xPos'], shape['width']);
     const id = element['id'];
     const label = element['label'];
     return {'shape': shape, 'id': id, 'label': label}; 
@@ -268,19 +259,20 @@ function Main() {
   }
 
   const orderByY = (elemDetails) => {
-    detections[1].map((elem) => {
-      let id = elem['id']
-      orderedElementDetailsByY.push(findMatchingElemDetail(id, elemDetails))
+    detections['ySorted'].map((elem) => {
+      let id = elem['id'];
+      orderedElementDetailsByY.push(findMatchingElemDetail(id, elemDetails));
     })
   }
 
-  let currentRow = -1
-  let currentRowEnd = -1
+  let currentRow = -1;
+  let currentRowEnd = -1;
+  let rowOffset = 60;
   const alignYPosition = (elemDetails) => {
     let yMaxPosition = elemDetails['shape']['yPos'];
     if(yMaxPosition > currentRowEnd) {
       currentRow = yMaxPosition;
-      currentRowEnd = yMaxPosition + 60;
+      currentRowEnd = yMaxPosition + rowOffset;
     } else {
       yMaxPosition = currentRow
     }
@@ -304,7 +296,7 @@ function Main() {
         <>
         {displayElements ? (
         <>
-          {detections[0].map((element) => {
+          {detections['xSorted'].map((element) => {
             let res = generateDetailsOfElement(element);
             elementDetails.push(res);
           })}
@@ -322,7 +314,6 @@ function Main() {
             htmlStr += res[1]; 
             return res[0];
           })}
-          {/* {[{'bounding_box': [0.1, 0.2, 0.5, 0.6], 'id': 1, 'label': 'Button'}].map((element) => renderElementOnScreen(element))} */}
           <button onClick={handleDisplayElementsToggle}>Show Main Screen</button>
           <button onClick={handleShowCodeToggle}>Show ReactJS Code</button>
         </>
@@ -336,7 +327,7 @@ function Main() {
         <h3>
         <label for="sketch-file">Choose a JPEG file:  </label>
         </h3>
-        <input type="file" accept='.jpg' id='sketch-file' onChange={handleFile}/>
+        <input type="file" accept='.jpeg' id='sketch-file' onChange={handleFile}/>
         {preview && (
           <div className='ready'>
             <img src={preview} alt="Your image" id="sketch-image"/>

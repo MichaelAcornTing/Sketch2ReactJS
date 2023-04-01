@@ -5,8 +5,10 @@ from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as viz_utils
 import tensorflow as tf
 import os
+# import io
 import base64
 from io import BytesIO
+# from ocr import applyOCR
 
 
 # IMAGE_PATHS = ["./Project_Flask/Black_1.jpeg"]
@@ -28,10 +30,18 @@ def getDetections(boxes, classes, scores):
             detects.append({'bounding_box': bounding_box, 'label': label, 'id': i})
     return detects
 
+
 def preprocessImage(encodedImage):
     imageBytes = base64.b64decode(encodedImage)
     imageFile = BytesIO(imageBytes)
     return imageFile
+
+
+# def applyOCRToLabels(detectedElements, imageFile):
+#     for element in detectedElements:
+#         if element['label'] == 'Label':
+#             text = applyOCR(element['bounding_box'], imageFile)
+#             element['text'] = text
 
 def processImage(encodedImage):
     imageFile = preprocessImage(encodedImage)
@@ -66,6 +76,7 @@ def processImage(encodedImage):
 
     detects = getDetections(boxes, classes, scores)
     print(detects)
+    # applyOCRToLabels(detects, imageFile)
     return detects
 
 # for image_path in IMAGE_PATHS:

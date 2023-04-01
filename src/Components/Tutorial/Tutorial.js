@@ -1,11 +1,12 @@
 import React from 'react';
 import './Tutorial.css'
+import { TITLE } from './info';
 
 function Tutorial() {
   return (
     <div className='Tutorial'>
       <div className='header'>
-        <h1>Tutorial</h1>
+        <h1>{TITLE}</h1>
       </div>
 
       <div className='tutorial-body'>
@@ -29,7 +30,7 @@ function Tutorial() {
         <br /> 
         <h4>Using a computer webcam</h4>
         <ol>
-          <li>Take a picture of the skecth using your computer webcam</li>
+          <li>Take a picture of the sketch using your computer webcam</li>
           <li>If the image is not already JPEG (.jpg), convert the image to JPEG. Here is a website you can use to do so: <a href="https://cloudconvert.com" target="_blank">Cloud Convert</a></li>  
         </ol>
 

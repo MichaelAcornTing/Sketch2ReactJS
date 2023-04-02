@@ -5,10 +5,10 @@ from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as viz_utils
 import tensorflow as tf
 import os
-# import io
+import io
 import base64
 from io import BytesIO
-# from ocr import applyOCR
+from Project_Flask.ocr import applyOCR
 
 
 # IMAGE_PATHS = ["./Project_Flask/Black_1.jpeg"]
@@ -37,46 +37,33 @@ def preprocessImage(encodedImage):
     return imageFile
 
 
-# def applyOCRToLabels(detectedElements, imageFile):
-#     for element in detectedElements:
-#         if element['label'] == 'Label':
-#             text = applyOCR(element['bounding_box'], imageFile)
-#             element['text'] = text
+def applyOCRToLabels(detectedElements, imageFile):
+    for element in detectedElements:
+        label = element['label']
+        if label == 'Label' or label == 'Button':
+            text = applyOCR(element['bounding_box'], imageFile)
+            element['text'] = text
+
 
 def processImage(encodedImage):
     imageFile = preprocessImage(encodedImage)
     image_np = load_image_into_numpy_array(imageFile)
     input_tensor = tf.convert_to_tensor(image_np)
     input_tensor = input_tensor[tf.newaxis, ...]
-    # input_tensor = np.expand_dims(image_np, 0)
     detections = detect_fn(input_tensor)
-    # print(detections)
     num_detections = int(detections.pop('num_detections'))
     detections = {key: value[0, :num_detections].numpy()
                 for key, value in detections.items()}
     detections['num_detections'] = num_detections
     detections['detection_classes'] = detections['detection_classes'].astype(np.int64)
-    image_np_with_detections = image_np.copy()
 
     boxes = detections['detection_boxes'].tolist()
     classes = detections['detection_classes'].tolist()
     scores = detections['detection_scores'].tolist()
 
-    # print("Detection Boxes: ")
-    # print(detection_boxes)
-
-    # print("Detection Classes: ")
-    # print(detection_classes.tolist())
-
-    # print("Detection Scores: ")
-    # print(detection_scores.tolist()[0])
-
-    # print('Category Index: ')
-    # print(category_index)
-
     detects = getDetections(boxes, classes, scores)
+    applyOCRToLabels(detects, imageFile)
     print(detects)
-    # applyOCRToLabels(detects, imageFile)
     return detects
 
 # for image_path in IMAGE_PATHS:

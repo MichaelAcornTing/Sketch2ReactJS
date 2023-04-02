@@ -125,8 +125,8 @@ function Main() {
     return {'xPos': Math.round(xMinPosition), 'yPos': Math.round(yPos), 'height': Math.round(height), 'width': Math.round(width), 'midpoint': midpoint};
   }
 
-  const renderElementOnScreen = ({shape, id, label}) => {
-    let htmlElement = getHTMLElement(label, id, shape);
+  const renderElementOnScreen = (element) => {
+    let htmlElement = getHTMLElement(element);
     return htmlElement; 
   }
 
@@ -172,9 +172,16 @@ function Main() {
     return str;
   }
 
-  const getHTMLElement = (label, id, shape) => {
-    let xMinPosition = shape['xPos'];
-    // shape['xPos'] = alignXPosition(xMinPosition, shape['width']);
+  const validateText = (text) => {
+    if(text) return text;
+    else return 'Some Text'; 
+  }
+
+  const getHTMLElement = (element) => {
+    const shape = element['shape']
+    const id = element['id']
+    const label = element['label']
+    const text = validateText(element['text']); 
 
     let str = ""; 
     let styles = {
@@ -184,7 +191,6 @@ function Main() {
       // height: shape['height'],
       // width: shape['width']
     }
-    console.log(styles);
     
 
     let stylesStr = getStrFromStyles(styles);
@@ -200,11 +206,12 @@ function Main() {
 
       case 'Label':
         const closestID = getClosestElementID(id);
-        str += `<label id={${id}} key={${id}} style={${stylesStr}} for={${closestID}}>My Label</label>`
-        return [<label id={id} key={id} style={styles} for={closestID}>My Label</label>, str];
+        str += `<label id={${id}} key={${id}} style={${stylesStr}} for={${closestID}}>${text}</label>`
+        return [<label id={id} key={id} style={styles} for={closestID}>{text}</label>, str];
+
       case 'Button':
         str += `<button id={${id}} key={${id}} style={${stylesStr}}>My Button</button>`;
-        return [<button id={id} key={id} style={styles}>My Button</button>, str];
+        return [<button id={id} key={id} style={styles}>{text}</button>, str];
 
       case 'TextArea':
         str += `<textarea id={${id}} key={${id}} style={${stylesStr}}></textarea>`
@@ -247,7 +254,8 @@ function Main() {
     const shape = getShapeFromBoundingBox(bounding_box);
     const id = element['id'];
     const label = element['label'];
-    return {'shape': shape, 'id': id, 'label': label}; 
+    const text = element['text'];
+    return {'shape': shape, 'id': id, 'label': label, 'text': text}; 
   }
 
   const findMatchingElemDetail = (id, elemDetails) => {

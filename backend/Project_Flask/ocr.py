@@ -15,6 +15,6 @@ def applyOCR(bounding_box, imageFile):
     upper = height - (bounding_box[2] * height)
     right = bounding_box[3] * width
     lower = height - (bounding_box[0] * height)
-    croppedImage = image.crop(left, upper, right, lower)
+    croppedImage = image.crop((left, upper, right, lower))
     text = pytesseract.image_to_string(croppedImage)
     return text

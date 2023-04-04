@@ -239,11 +239,6 @@ function Main() {
   }
 }
 
-  const updateLabelElement = (elementID, text) => {
-    let element = document.getElementById(elementID);
-    element.innerHTML = text;
-  };
-
   const handleShowCodeToggle = () => {
     setShowCode(!showCode);
     setShowCode(htmlStr);

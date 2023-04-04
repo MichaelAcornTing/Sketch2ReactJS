@@ -6,7 +6,7 @@ def getDimensionsFromImageFile(image):
     width, height = image.size
     return {'width': width, 'height': height}
 
-def applyOCR(bounding_box, imageFile):
+def runOCR(bounding_box, imageFile):
     image = Image.open(imageFile)
     dimensions = getDimensionsFromImageFile(image)
     width = dimensions['width']

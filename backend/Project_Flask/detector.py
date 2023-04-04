@@ -8,7 +8,7 @@ import os
 import io
 import base64
 from io import BytesIO
-from Project_Flask.ocr import applyOCR
+from Project_Flask.ocr import runOCR
 
 
 # IMAGE_PATHS = ["./Project_Flask/Black_1.jpeg"]
@@ -37,11 +37,11 @@ def preprocessImage(encodedImage):
     return imageFile
 
 
-def applyOCRToLabels(detectedElements, imageFile):
+def applyOCR(detectedElements, imageFile):
     for element in detectedElements:
         label = element['label']
         if label == 'Label' or label == 'Button':
-            text = applyOCR(element['bounding_box'], imageFile)
+            text = runOCR(element['bounding_box'], imageFile)
             element['text'] = text
 
 
@@ -62,7 +62,7 @@ def processImage(encodedImage):
     scores = detections['detection_scores'].tolist()
 
     detects = getDetections(boxes, classes, scores)
-    applyOCRToLabels(detects, imageFile)
+    applyOCR(detects, imageFile)
     print(detects)
     return detects
 

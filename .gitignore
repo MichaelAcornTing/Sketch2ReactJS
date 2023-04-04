@@ -30,3 +30,4 @@ export/
 updated_model/
 object_detection/
 node_modules
+my_model/

@@ -1,5 +1,5 @@
 from flask import Flask, request
-from Project_Flask.detector import processImage
+from detector import processImage
 
 from flask_cors import CORS, cross_origin
 api = Flask(__name__)

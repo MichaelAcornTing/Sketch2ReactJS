@@ -8,13 +8,13 @@ import os
 import io
 import base64
 from io import BytesIO
-from Project_Flask.ocr import runOCR
+from ocr import runOCR
 
 
 # IMAGE_PATHS = ["./Project_Flask/Black_1.jpeg"]
 THRESHOLD = 0.5 
-detect_fn = tf.saved_model.load("./Project_Flask/my_model/saved_model")
-PATH_TO_LABELS = './Project_Flask/label_map.pbtxt'
+detect_fn = tf.saved_model.load("my_model/saved_model")
+PATH_TO_LABELS = 'label_map.pbtxt'
 category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
 
 def load_image_into_numpy_array(path):

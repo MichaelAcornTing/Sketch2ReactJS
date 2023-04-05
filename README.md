@@ -61,7 +61,7 @@ Ran 20 tests in 91.767s
 
 OK (skipped=1)
 ```
-7. Download Sketch2ReactJS github repo
+7. Download Sketch2ReactJS github repo from main folder
 ```
 #If in research folder perform this command
 cd ../../

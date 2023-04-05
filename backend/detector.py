@@ -1,3 +1,5 @@
+# Code below was used and tweaked from this link: https://stackoverflow.com/questions/71720841/tensorflow2-object-detection-api-loading-saved-model-pb-and-use-for-prediction
+
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt

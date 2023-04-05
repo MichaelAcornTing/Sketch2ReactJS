@@ -15,7 +15,7 @@ function Tutorial() {
         <ol>
           <li>Get a sheet of plain white paper</li>
           <li>Use either: Black Pen, Blue Pen, or Pencil</li>
-          <li>Sketch on the paper using the supported JSX tags (<a href="/tags" target="_blank">click here</a> for examples of supported JSX tags)</li>
+          <li>Sketch on the paper using the supported ReactJS elements (<a href="/tags" target="_blank">click here</a> for examples of supported ReactJS elements)</li>
         </ol>
 
         <br /> 

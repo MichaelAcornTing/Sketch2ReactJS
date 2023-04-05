@@ -166,10 +166,10 @@ function Main() {
     let str = '';
     str += `position: '${styles['position']}', `;
     str += `left: ${styles['left']}, `;
-    str += `top: ${styles['top']}, `;
+    str += `top: ${styles['top']}`;
     // str += `height: ${styles['height']}, `;
     // str += `width: ${styles['width']}, `;
-    return str;
+    return '{' + str + '}';
   }
 
   const validateText = (text) => {
@@ -349,7 +349,7 @@ function Main() {
       )}
       </>
       )}
-    </div>
+     </div>
   )
 }
 

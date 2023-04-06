@@ -1,12 +1,11 @@
 import React from 'react';
-import './Tutorial.css'
-import { TITLE } from './info';
+import './Tutorial.css';
 
 function Tutorial() {
   return (
     <div className='Tutorial'>
       <div className='header'>
-        <h1>{TITLE}</h1>
+        <h1>Tutorial</h1>
       </div>
 
       <div className='tutorial-body'>

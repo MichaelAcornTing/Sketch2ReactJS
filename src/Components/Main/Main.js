@@ -21,6 +21,7 @@ function Main() {
   // Config Backend
   const BACKEND_URL = 'http://127.0.0.1:5000/';
 
+  // Checks to see if object detection has returned result
   useEffect(() => {
     if(detections) {
       setDetectionFinished(true);
@@ -44,6 +45,7 @@ function Main() {
     }
   }, [selectedFile])
   
+  // Converts uploaded image into base64 encoded string and saves data
   useEffect(() => {
     if(selectedFile) {
       const fileReader = new FileReader();
@@ -56,7 +58,7 @@ function Main() {
   }, [selectedFile])
   
 
-  // Uploads File and Previews it
+  // allows file contents to be saved into variable when uploaded
   const handleFile = (event) => {
     setDetections();
     if(event.target.value) {
@@ -66,7 +68,7 @@ function Main() {
   }
 
 
-  // Converts uploaded sketch image to html
+  // Gets detected data on sketch from object detection model
   const handleConversion = async () => {
     setIsDetecting(true);
     const response = await axios.post(BACKEND_URL + 'convert', {'encodedImage': sketchImageData});
@@ -75,11 +77,12 @@ function Main() {
     setIsDetecting(false);
   }
 
-
+  // Toggles button that allows user to see results
   const handleDisplayElementsToggle = () => {
     setDisplayElements(!displayElements);
   }
 
+  // Resizes elements to fit on page 
   const adjustPositionToDimensionSize = (pos, typeOfCoordinate) => {
     switch(typeOfCoordinate) {
       case 'x':
@@ -89,6 +92,7 @@ function Main() {
     }
   }
 
+  // Aligns elements on page via leftmost x-coordinate
   let currentCol = -1
   let currentColEnd = -1
   const colOffset = 100
@@ -104,6 +108,7 @@ function Main() {
     return currentCol; 
   }
 
+  // Element shape and coordinates resized for screen
   const getShapeFromBoundingBox = (bounding_box) => {
     let xMinPosition = bounding_box[1];
     xMinPosition = adjustPositionToDimensionSize(xMinPosition, 'x');
@@ -125,10 +130,12 @@ function Main() {
     return {'xPos': Math.round(xMinPosition), 'yPos': Math.round(yPos), 'height': Math.round(height), 'width': Math.round(width), 'midpoint': midpoint};
   }
 
+  // Displays dynamically generarated ReactJS elements on screen
   const renderElementOnScreen = (element) => {
-    let htmlElement = getHTMLElement(element);
-    return htmlElement; 
+    let reactElement = getReactElement(element);
+    return reactElement; 
   }
+
 
   const getDistanceFromTwoPoints = (point1, point2) => {
     let a = Math.pow(point1[0] + point2[0], 2);
@@ -145,7 +152,7 @@ function Main() {
     let distance = getDistanceFromTwoPoints(currentElementMidpoint, otherElementMidpoint);
     return distance;
   };
-
+   // Finds id of closest element given an element id
   const getClosestElementID = (id) => {
     let resultID = 'none';
     let smallestDistance = 1000000;
@@ -162,6 +169,7 @@ function Main() {
     return resultID;
   }
 
+  // Stringifies the styles attribute to be in code to return to user
   const getStrFromStyles = (styles) => {
     let str = '';
     str += `position: '${styles['position']}', `;
@@ -172,12 +180,14 @@ function Main() {
     return '{' + str + '}';
   }
 
+  // Checks if text is null and provides placeholder text
   const validateText = (text) => {
     if(text) return text;
     else return 'Some Text'; 
   }
 
-  const getHTMLElement = (element) => {
+  // Generates React Element based on detected element
+  const getReactElement = (element) => {
     const shape = element['shape']
     const id = element['id']
     const label = element['label']
@@ -239,11 +249,13 @@ function Main() {
   }
 }
 
+  // Toggle that allows code to be displayed to the screen for user to copy
   const handleShowCodeToggle = () => {
     setShowCode(!showCode);
-    setShowCode(htmlStr);
+    setShowCode(reactStr);
   }
 
+  // Generates details from detected element to be mapped to React element
   const generateDetailsOfElement = (element) => {
     const bounding_box = element['bounding_box'];
     const shape = getShapeFromBoundingBox(bounding_box);
@@ -253,6 +265,7 @@ function Main() {
     return {'shape': shape, 'id': id, 'label': label, 'text': text}; 
   }
 
+  // Search function to map id number to a particular element
   const findMatchingElemDetail = (id, elemDetails) => {
     for(let i = 0; i < elemDetails.length; i++) {
       if(elemDetails[i]['id'] == id) {
@@ -261,6 +274,7 @@ function Main() {
     }
   }
 
+  // Orders elements on page by top-most y-coordinate
   const orderByY = (elemDetails) => {
     detections['ySorted'].map((elem) => {
       let id = elem['id'];
@@ -268,6 +282,7 @@ function Main() {
     })
   }
 
+  // Aligns elements on page via top-most y-coordinate
   let currentRow = -1;
   let currentRowEnd = -1;
   let rowOffset = 60;
@@ -284,10 +299,15 @@ function Main() {
   }
 
 
+  // Holds code that will be returned to user
+  let reactStr = '';
 
-  let htmlStr = '';
+  // Holds details of all elements detected
   let elementDetails = [];
-  let orderedElementDetailsByY = [] 
+
+  // Holds details of all elements detected sorted by topm-most y-coordinate
+  let orderedElementDetailsByY = [];
+
   return (
     <div className='Main'>
       {showCode ? (
@@ -314,7 +334,7 @@ function Main() {
           })}
           {elementDetails.map((element) => {
             let res = renderElementOnScreen(element);
-            htmlStr += res[1]; 
+            reactStr += res[1]; 
             return res[0];
           })}
           <button onClick={handleDisplayElementsToggle}>Show Main Screen</button>

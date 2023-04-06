@@ -10,7 +10,7 @@ Transforms sketches into ReactJS code
 * [Python](https://www.python.org/)
 
 ## Installation
-The following steps are for Mac users
+The following steps are for Mac users (Windows users can follow along as well however, the Tensorflow installation will be different, you can see [here](https://stackabuse.com/installing-tensorflow-on-windows/) for more)
 1. Create a new folder on your computer
 2. Install Python [here](https://www.python.org/)
 3. Go into the newly created folder

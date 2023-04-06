@@ -1,4 +1,5 @@
 # Code below was inspired from this link: https://stackoverflow.com/questions/71720841/tensorflow2-object-detection-api-loading-saved-model-pb-and-use-for-prediction
+# Object Detection imports are from this following GitHub directory: https://github.com/tensorflow/models
 
 import numpy as np
 from PIL import Image
